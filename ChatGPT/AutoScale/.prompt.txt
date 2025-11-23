@@ -1,0 +1,3 @@
+In a C# console application, I am using system.threading.channels to process tasks in multiple threads. 
+I want to add more workers/consumers to handle high loads dynamically. 
+I want something similar to AWS autoscaling groups. How can I do this.
