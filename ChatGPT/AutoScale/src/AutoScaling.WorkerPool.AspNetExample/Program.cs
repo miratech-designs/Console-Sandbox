@@ -1,9 +1,9 @@
 using AutoScaling.WorkerPool;
+using Prometheus;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.Threading.Tasks;
 
 var builder = WebApplication.CreateBuilder();
 
@@ -14,6 +14,9 @@ builder.Services.AddAutoScalingWorkerPool(cfg =>
     cfg.BacklogPerWorkerScaleOut = 4;
     cfg.IdleTimeout = System.TimeSpan.FromSeconds(10);
 });
+
+// Register Prometheus metrics sink for scraping at /metrics
+builder.Services.AddSingleton<IWorkerPoolMetrics, PrometheusWorkerPoolMetrics>();
 
 var app = builder.Build();
 
@@ -43,5 +46,9 @@ app.MapGet("/status", () =>
 });
 
 app.Lifetime.ApplicationStopping.Register(() => pool.StopAsync().GetAwaiter().GetResult());
+
+// Expose Prometheus metrics at /metrics
+app.UseMetricServer();
+app.UseHttpMetrics();
 
 app.Run();

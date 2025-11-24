@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AutoScaling.WorkerPool\AutoScaling.WorkerPool.csproj" />
+    <PackageReference Include="prometheus-net.AspNetCore" Version="6.0.0" />
   </ItemGroup>
 
 </Project>

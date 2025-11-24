@@ -10,8 +10,10 @@ namespace AutoScaling.WorkerPool
             var config = new WorkerPoolConfig();
             configure?.Invoke(config);
             services.AddSingleton(config);
-            services.AddSingleton<IWorkerPool, PriorityAutoScalingWorkerPool>(sp => new PriorityAutoScalingWorkerPool(config, sp.GetService<IWorkerPoolMetrics>()));
+            // Register a default metrics sink (console). Consumers may override by registering
+            // a different `IWorkerPoolMetrics` before resolving the pool.
             services.AddSingleton<IWorkerPoolMetrics, ConsoleWorkerPoolMetrics>();
+            services.AddSingleton<IWorkerPool, PriorityAutoScalingWorkerPool>(sp => new PriorityAutoScalingWorkerPool(config, sp.GetRequiredService<IWorkerPoolMetrics>()));
             return services;
         }
     }
