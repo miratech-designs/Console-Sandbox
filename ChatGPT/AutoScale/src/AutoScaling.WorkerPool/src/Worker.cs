@@ -49,36 +49,46 @@ namespace AutoScaling.WorkerPool
 
         private async Task RunAsync(CancellationToken cancellationToken)
         {
-            while (!cancellationToken.IsCancellationRequested)
+            try
             {
-                var item = await _fetcher(cancellationToken).ConfigureAwait(false);
-                if (item is null)
+                while (!cancellationToken.IsCancellationRequested)
                 {
-                    await Task.Delay(50, cancellationToken).ConfigureAwait(false);
-                    continue;
-                }
+                    var item = await _fetcher(cancellationToken).ConfigureAwait(false);
+                    if (item is null)
+                    {
+                        await Task.Delay(50, cancellationToken).ConfigureAwait(false);
+                        continue;
+                    }
 
-                LastActiveUtc = DateTime.UtcNow;
-                var sw = System.Diagnostics.Stopwatch.StartNew();
-                bool succeeded = true;
-                try
-                {
-                    await item.Work(cancellationToken).ConfigureAwait(false);
+                    LastActiveUtc = DateTime.UtcNow;
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    bool succeeded = true;
+                    try
+                    {
+                        await item.Work(cancellationToken).ConfigureAwait(false);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        succeeded = false;
+                    }
+                    catch
+                    {
+                        succeeded = false;
+                    }
+                    finally
+                    {
+                        sw.Stop();
+                        _metrics?.TaskCompleted(item, sw.Elapsed, succeeded);
+                    }
                 }
-                catch (OperationCanceledException)
-                {
-                    succeeded = false;
-                }
-                catch
-                {
-                    succeeded = false;
-                    // swallow; metrics will report
-                }
-                finally
-                {
-                    sw.Stop();
-                    _metrics?.TaskCompleted(item, sw.Elapsed, succeeded);
-                }
+            }
+            catch (OperationCanceledException)
+            {
+                // Graceful shutdown requested - exit silently.
+            }
+            catch (Exception)
+            {
+                // Unexpected exception in worker loop — swallow to avoid crashing the host.
             }
         }
     }
