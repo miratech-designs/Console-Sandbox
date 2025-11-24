@@ -1,0 +1,45 @@
+@page "/"
+@using AutoScaling.WorkerPool.Dashboard.Services
+@using Microsoft.JSInterop
+@using System.Linq
+@inject MetricsService Metrics
+@inject IJSRuntime JS
+@implements IDisposable
+
+<h2>Backlog (items per priority)</h2>
+<canvas id="backlogChart" width="800" height="300"></canvas>
+
+<h2>Task Durations (ms)</h2>
+<canvas id="latencyChart" width="800" height="300"></canvas>
+
+@code {
+    private System.Timers.Timer? _timer;
+
+    protected override void OnInitialized()
+    {
+        // poll every 1000ms
+        _timer = new System.Timers.Timer(1000);
+        _timer.Elapsed += async (_, __) => await UpdateAsync();
+        _timer.Start();
+    }
+
+    private async Task UpdateAsync()
+    {
+        var backlog = Metrics.GetBacklogSeries();
+        var times = backlog.Select(s => s.Utc.ToString("HH:mm:ss")).ToArray();
+        var high = backlog.Select(s => s.High).ToArray();
+        var normal = backlog.Select(s => s.Normal).ToArray();
+        var low = backlog.Select(s => s.Low).ToArray();
+
+        await JS.InvokeVoidAsync("charts.updateBacklog", "backlogChart", times, high, normal, low);
+
+        var durations = Metrics.GetTaskDurations().Select(d => d.Milliseconds).ToArray();
+        await JS.InvokeVoidAsync("charts.updateLatency", "latencyChart", durations);
+    }
+
+    public void Dispose()
+    {
+        _timer?.Stop();
+        _timer?.Dispose();
+    }
+}
