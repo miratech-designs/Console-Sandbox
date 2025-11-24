@@ -1,0 +1,36 @@
+# Visual Studio / .NET
+bin/
+obj/
+artifacts/
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# NuGet
+.nuget/
+.nuget/packages/
+packages/
+*.nupkg
+
+# Rider/IDE
+.idea/
+*.sln.iml
+
+# VS Code
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary
+*.tmp
+*.temp
+
+# Generated files
+Generated/

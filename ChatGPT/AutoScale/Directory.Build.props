@@ -1,0 +1,15 @@
+<Project>
+  <PropertyGroup>
+    <VersionPrefix>1.0.0</VersionPrefix>
+    <Authors>miratech-designs</Authors>
+    <Company>miratech-designs</Company>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://example.org/AutoScaling.WorkerPool</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/miratech-designs/Console-Sandbox</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile></PackageReadmeFile>
+    <PackageTags>autoscaling;workerpool;dotnet;priority;observability</PackageTags>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+</Project>
