@@ -7,8 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="OpenTelemetry.Exporter.Console" Version="1.5.0" />
+    <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.5.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="8.0.1" />
     <ProjectReference Include="..\AutoScaling.WorkerPool\AutoScaling.WorkerPool.csproj" />
     <PackageReference Include="prometheus-net.AspNetCore" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\ErrorHandler\ErrorHandler.csproj" />
   </ItemGroup>
 
 </Project>

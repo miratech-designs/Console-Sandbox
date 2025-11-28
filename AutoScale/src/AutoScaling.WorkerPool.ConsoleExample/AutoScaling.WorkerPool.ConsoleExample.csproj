@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AutoScaling.WorkerPool\AutoScaling.WorkerPool.csproj" />
+    <ProjectReference Include="..\..\..\ErrorHandler\ErrorHandler.csproj" />
   </ItemGroup>
 
 </Project>
