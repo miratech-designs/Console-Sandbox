@@ -1,0 +1,3 @@
+I want to create a global error handler library that can be referenced by console applications. Use the latest verion of .Net, C# and best practices.
+
+add to the readme an example of wiring up the global exception handler in an advanced non-toplevel console
